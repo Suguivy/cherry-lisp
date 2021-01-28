@@ -9,11 +9,14 @@ import ExprType
 parseExpression :: String -> Either ParseError Expr
 parseExpression s = do
   tokns <- parse parseTokens "lexical error" s
-  expr <- parse parseExpressionFromTokens "parsing error" tokns
+  expr <- parse expressionFromTokens "parsing error" tokns
   return expr
 
-parseExpressionFromTokens :: GenParser Token st Expr
-parseExpressionFromTokens = intE <|> try defineE <|> try nilE <|> varE <|> procedureE
+expressionFromTokens :: GenParser Token st Expr
+expressionFromTokens = do
+  expr <- intE <|> try defineE <|> try nilE <|> varE <|> procedureE
+  _ <- eof
+  return expr
 
 intE :: GenParser Token st Expr
 intE = do
@@ -24,7 +27,7 @@ procedureE :: GenParser Token st Expr
 procedureE = do
   _ <- parseLeftParenT
   (VarT p) <- parseVarT
-  args <- many parseExpressionFromTokens
+  args <- many expressionFromTokens
   _ <- parseRightParenT
   return $ ProcedureE p args
 
@@ -43,7 +46,7 @@ defineE = do
   _ <- parseLeftParenT
   _ <- parseDefineT
   (VarT var) <- parseVarT
-  expr <- parseExpressionFromTokens
+  expr <- expressionFromTokens
   _ <- parseRightParenT
   return $ DefinitionE var expr
 
