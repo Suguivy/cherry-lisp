@@ -1,0 +1,31 @@
+name:                cherry-lisp
+version:             0.1.0.0
+-- synopsis:
+-- description:
+--homepage:            https://github.com/githubuser/lisp#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Suguivy
+maintainer:          suguivy@riseup.com
+copyright:           2021 Suguivy
+category:            Language
+build-type:          Simple
+cabal-version:       >=1.10
+extra-source-files:  README.md
+
+executable cherry
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+
+  other-modules:       ExprType,
+                       ExprParser,
+                       TokenType,
+                       TokenParser,
+                       Evaluator,
+                       ParserUtils,
+                       TokenParser
+
+  build-depends:       base >= 4.7 && < 5,
+                       containers,
+                       parsec
