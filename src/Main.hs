@@ -3,24 +3,22 @@ module Main where
 import Evaluator
 import ExprParser
 import Text.Parsec.Error
-import Data.Either
-import System.IO
+import Control.Monad
+import Data.Maybe
+import System.Console.Haskeline
 
 main :: IO ()
 main = do
-  putStrLn ""
-  putLogo
-  putStrLn ""
-  cycle
-  where cycle = do
-          putPrompt
-          hFlush stdout
-          s <- getLine
-          let r = readEval s
-          putStrLn $ case r of
-            (Right res) -> res
-            (Left err) -> show err
-          cycle
+  putStrLn logo
+  runInputT defaultSettings loop
+  where loop = do
+          line <- getInputLine "cherry> "
+          unless (isNothing line) $ do
+            let r = readEval $ fromJust line
+            outputStrLn $ case r of
+              Right res -> res
+              Left err -> show err
+            loop
 
 readEval :: String -> Either ParseError String
 readEval s = do
@@ -28,8 +26,5 @@ readEval s = do
   let result = eval expr
   return $ show result
 
-putLogo :: IO ()
-putLogo = putStr . concat $ map (++"\n") ["  /\\", " |  \\", " @   @"]
-
-putPrompt :: IO ()
-putPrompt = putStr "chery> "
+logo :: String
+logo = unlines ["","  /\\", " |  \\", " @   @",""]
