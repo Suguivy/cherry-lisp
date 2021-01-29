@@ -9,13 +9,18 @@ import ExprType
 parseExpression :: String -> Either ParseError Expr
 parseExpression s = do
   tokns <- parse parseTokens "lexical error" s
-  expr <- parse expressionFromTokens "parsing error" tokns
+  expr <- parse expressionFromTokensEOF "parsing error" tokns
+  return expr
+
+expressionFromTokensEOF :: GenParser Token st Expr
+expressionFromTokensEOF = do
+  expr <- expressionFromTokens
+  _ <- eof
   return expr
 
 expressionFromTokens :: GenParser Token st Expr
 expressionFromTokens = do
   expr <- intE <|> try defineE <|> try nilE <|> varE <|> procedureE
-  _ <- eof
   return expr
 
 intE :: GenParser Token st Expr

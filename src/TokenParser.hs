@@ -8,7 +8,9 @@ import TokenType
 parseTokens :: GenParser Char st [Token]
 parseTokens = do
     _ <-  spaces
-    many $ (spaces >> anyLispToken)
+    tokns <- many $ do t <- anyLispToken; spaces; return t
+    _ <- eof
+    return tokns
 
 anyLispToken :: GenParser Char st Token
 anyLispToken = leftParenT <|> rightParenT <|> try nilT <|> try defineT <|> varT <|> intT
