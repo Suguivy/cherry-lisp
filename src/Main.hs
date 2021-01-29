@@ -1,7 +1,7 @@
 module Main where
 
 import Evaluator
-import ExprParser
+import Parser
 import Control.Monad
 import Data.Maybe
 import System.Console.Haskeline

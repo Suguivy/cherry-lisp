@@ -4,11 +4,9 @@ import qualified Data.Map as M
 import ExprType
 
 type Env = M.Map String Expr
-type Proc = String
 
 -- TODO: create a separated file for builtinProcs
 -- TODO: create a BuiltinProc or something like that in data Expr, and make + a builtin proc
--- TODO: create enviroments
 
 base :: Env
 base = M.fromList [

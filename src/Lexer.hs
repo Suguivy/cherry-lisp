@@ -1,4 +1,4 @@
-module TokenParser where
+module Lexer where
 
 import Text.ParserCombinators.Parsec
 import ParserUtils

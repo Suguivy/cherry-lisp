@@ -1,8 +1,8 @@
-module ExprParser where
+module Parser where
 
 import Text.Parsec
 import Text.Parsec.String
-import TokenParser
+import Lexer
 import TokenType
 import ExprType
 
