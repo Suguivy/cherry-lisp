@@ -3,7 +3,7 @@ module ExprType where
 data Expr = IntE Integer
           | VarE String
           | ProcedureE String [Expr]
-          | DefinitionE String Expr
+          | SetE String Expr
           | NilE
 
 instance Show Expr where

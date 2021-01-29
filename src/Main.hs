@@ -2,7 +2,6 @@ module Main where
 
 import Evaluator
 import ExprParser
-import Text.Parsec.Error
 import Control.Monad
 import Data.Maybe
 import System.Console.Haskeline
@@ -10,21 +9,21 @@ import System.Console.Haskeline
 main :: IO ()
 main = do
   putStrLn logo
-  runInputT defaultSettings loop
-  where loop = do
+  runInputT defaultSettings repl
+
+repl :: InputT IO ()
+repl = do
+  repl' base
+  where repl' env = do
           line <- getInputLine "cherry> "
           unless (isNothing line) $ do
-            let r = readEval $ fromJust line
-            outputStrLn $ case r of
-              Right res -> res
-              Left err -> show err
-            loop
-
-readEval :: String -> Either ParseError String
-readEval s = do
-  expr <- parseExpression s
-  let result = eval expr
-  return $ show result
+            let expr = parseExpression $ fromJust line
+            let (nEnv, out) = case expr of
+                  (Left err)    -> (env, show err)
+                  (Right expr') -> let (env', nExp) = eval env expr'
+                                   in (env', show nExp)
+            outputStrLn out
+            repl' nEnv
 
 logo :: String
 logo = unlines ["","  /\\", " |  \\", " @   @",""]

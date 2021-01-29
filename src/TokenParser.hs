@@ -13,7 +13,7 @@ parseTokens = do
     return tokns
 
 anyLispToken :: GenParser Char st Token
-anyLispToken = leftParenT <|> rightParenT <|> try nilT <|> try defineT <|> varT <|> intT
+anyLispToken = leftParenT <|> rightParenT <|> try nilT <|> try setT <|> varT <|> intT
 
 ------------------------------------------------------------
 
@@ -28,8 +28,8 @@ leftParenT = char '(' >> return LeftParenT
 rightParenT :: GenParser Char st Token
 rightParenT = char ')' >> return RightParenT
 
-defineT :: GenParser Char st Token
-defineT = caseInsensitiveString "define" >> return DefineT
+setT :: GenParser Char st Token
+setT = caseInsensitiveString "set!" >> return SetT
 
 nilT :: GenParser Char st Token
 nilT = caseInsensitiveString "nil" >> return NilT

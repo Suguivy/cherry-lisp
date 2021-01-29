@@ -2,7 +2,7 @@ module TokenType where
 
 data Token = LeftParenT
            | RightParenT
-           | DefineT
+           | SetT
            | VarT String
            | IntT Integer
            | NilT

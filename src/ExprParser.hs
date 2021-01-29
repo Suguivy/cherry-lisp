@@ -49,11 +49,11 @@ nilE = do
 defineE :: GenParser Token st Expr
 defineE = do
   _ <- parseLeftParenT
-  _ <- parseDefineT
+  _ <- parseSetT
   (VarT var) <- parseVarT
   expr <- expressionFromTokens
   _ <- parseRightParenT
-  return $ DefinitionE var expr
+  return $ SetE var expr
 
 ------------------------------------------------------------
 
@@ -68,8 +68,8 @@ parseLeftParenT = satisfyT (== LeftParenT)
 parseRightParenT :: GenParser Token st Token
 parseRightParenT = satisfyT (== RightParenT)
 
-parseDefineT :: GenParser Token st Token
-parseDefineT = satisfyT (== DefineT)
+parseSetT :: GenParser Token st Token
+parseSetT = satisfyT (== SetT)
 
 parseNilT :: GenParser Token st Token
 parseNilT = satisfyT (== NilT)

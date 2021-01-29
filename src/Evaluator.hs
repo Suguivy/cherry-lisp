@@ -5,23 +5,21 @@ import ExprType
 
 type Env = M.Map String Expr
 type Proc = String
-type Args = [Expr]
 
-eval :: Expr -> Expr
-eval (IntE x)             = IntE x
-eval (VarE v)             = VarE v
-eval (DefinitionE v exp)  = NilE
-eval (ProcedureE p args)  = apply p args
-eval NilE                 = NilE
-
-apply :: Proc -> Args -> Expr
-apply p args
-    | p == "+" = builtinPlus $ map eval args
 -- TODO: create a separated file for builtinProcs
 -- TODO: create a BuiltinProc or something like that in data Expr, and make + a builtin proc
 -- TODO: create enviroments
 
-builtinPlus :: [Expr] -> Expr
-builtinPlus [IntE x, IntE y] = IntE $ x + y
-builtinPlus ((IntE x):xs) = IntE $ x + n
-  where (IntE n) = builtinPlus xs
+base :: Env
+base = M.fromList [
+  ("test-var", IntE 10)
+  ]
+
+eval :: Env -> Expr -> (Env, Expr)
+eval env (IntE x)      = (env, IntE x)
+eval env (VarE v)      = (env, env M.! v)
+eval env (SetE v expr) = (M.insert v expr env, NilE)
+eval env NilE          = (env, NilE)
+
+--apply :: Proc -> Args -> Expr
+--apply p args
