@@ -15,8 +15,9 @@ base = M.fromList [
 
 eval :: Env -> Expr -> (Env, Expr)
 eval env (IntE x)      = (env, IntE x)
-eval env (VarE v)      = eval env $ env M.! v
-eval env (SetE v expr) = (M.insert v expr env, expr)
+eval env (VarE v)      = (M.insert v nExpr nEnv, nExpr)
+  where (nEnv, nExpr) = eval env $ env M.! v
+eval env (SetE v expr) = (M.insert v expr env, NilE)
 eval env NilE          = (env, NilE)
 
 --apply :: Proc -> Args -> Expr
