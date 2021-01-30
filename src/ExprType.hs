@@ -4,6 +4,7 @@ data Expr = IntE Integer
           | VarE String
           | SetE String Expr
           | ConsE Expr Expr
+          | LambdaE String Expr
           | QuotedE Expr
           | NilE
           deriving (Show)
