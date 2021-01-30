@@ -20,13 +20,19 @@ expressionFromTokensEOF = do
 
 expressionFromTokens :: GenParser Token st Expr
 expressionFromTokens = do
-  expr <- intE <|> try setE <|> try nilE <|> try consE <|> varE <|> procedureE
+  expr <- intE <|> quotedE <|> try setE <|> try nilE <|> try consE <|> varE <|> procedureE
   return expr
 
 intE :: GenParser Token st Expr
 intE = do
     (IntT num) <- parseIntT
     return $ IntE num
+
+quotedE :: GenParser Token st Expr
+quotedE = do
+  _ <- parseApostropheT
+  expr <- expressionFromTokens
+  return $ QuotedE expr
 
 procedureE :: GenParser Token st Expr
 procedureE = do
@@ -76,6 +82,9 @@ parseLeftParenT = satisfyT (== LeftParenT)
 
 parseRightParenT :: GenParser Token st Token
 parseRightParenT = satisfyT (== RightParenT)
+
+parseApostropheT :: GenParser Token st Token
+parseApostropheT = satisfyT (== ApostropheT)
 
 parseSetT :: GenParser Token st Token
 parseSetT = satisfyT isSetT

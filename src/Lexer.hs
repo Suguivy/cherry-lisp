@@ -12,7 +12,7 @@ parseTokens = do
     return tokns
 
 anyLispToken :: GenParser Char st Token
-anyLispToken = leftParenT <|> rightParenT <|> symbolT <|> intT
+anyLispToken = leftParenT <|> rightParenT <|> apostropheT <|> symbolT <|> intT
 
 ------------------------------------------------------------
 
@@ -23,6 +23,9 @@ intT = do
 
 leftParenT :: GenParser Char st Token
 leftParenT = char '(' >> return LeftParenT
+
+apostropheT :: GenParser Char st Token
+apostropheT = char '\'' >> return ApostropheT
 
 rightParenT :: GenParser Char st Token
 rightParenT = char ')' >> return RightParenT
