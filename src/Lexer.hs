@@ -12,7 +12,7 @@ parseTokens = do
     return tokns
 
 anyLispToken :: GenParser Char st Token
-anyLispToken = leftParenT <|> rightParenT <|> apostropheT <|> symbolT <|> intT
+anyLispToken = leftParenT <|> rightParenT <|> apostropheT <|> backslashT <|> symbolT <|> intT
 
 ------------------------------------------------------------
 
@@ -30,7 +30,10 @@ apostropheT = char '\'' >> return ApostropheT
 rightParenT :: GenParser Char st Token
 rightParenT = char ')' >> return RightParenT
 
+backslashT :: GenParser Char st Token
+backslashT = char '\\' >> return BackslashT
+
 symbolT :: GenParser Char st Token
 symbolT = do
-    var <- map toLower <$> many1 (letter <|> oneOf "+-*/\\!|@#$~%&/=<>")
+    var <- map toLower <$> many1 (letter <|> oneOf "+-*/!|@#$~%&/=<>")
     return $ SymbolT var

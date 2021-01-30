@@ -20,7 +20,7 @@ expressionFromTokensEOF = do
 
 expressionFromTokens :: GenParser Token st Expr
 expressionFromTokens = do
-  expr <- intE <|> quotedE <|> try setE <|> try nilE <|> try consE <|> varE <|> listE
+  expr <- intE <|> quotedE <|> try setE <|> try nilE <|> try consE <|> try lambdaE <|> varE <|> listE
   return expr
 
 listE :: GenParser Token st Expr
@@ -71,12 +71,23 @@ setE = do
   _ <- parseRightParenT
   return $ SetE var expr
 
+lambdaE :: GenParser Token st Expr
+lambdaE = do
+  _ <- parseBackslashT
+  (SymbolT arg) <- parseSymbolT
+  body <- expressionFromTokens
+  return $ LambdaE arg body
+
+
 ------------------------------------------------------------
 
 satisfyT :: (Stream s m a, Show a) => (a -> Bool) -> ParsecT s u m a
 satisfyT f = tokenPrim show
                        (\pos _ _ -> incSourceColumn pos 1)
                        (\t -> if f t then Just t else Nothing)
+
+parseBackslashT :: GenParser Token st Token
+parseBackslashT = satisfyT (== BackslashT)
 
 parseLeftParenT :: GenParser Token st Token
 parseLeftParenT = satisfyT (== LeftParenT)
