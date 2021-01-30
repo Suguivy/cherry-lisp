@@ -14,13 +14,13 @@ base = M.fromList [
   ]
 
 eval :: Env -> Expr -> (Env, Expr)
-eval env i@(IntE x)    = (env, i)
+eval env i@(IntE _)    = (env, i)
 eval env (VarE v)      = (M.insert v nExpr nEnv, nExpr)
   where (nEnv, nExpr)  = eval env $ env M.! v
 eval env (SetE v expr) = (M.insert v expr env, NilE)
 eval env (QuotedE e)    = (env, e)
-eval env c@(ConsE _ _) = (env, c)
+eval env (ConsE car cdr) = (env, apply car cdr)
 eval env NilE          = (env, NilE)
 
---apply :: Proc -> Args -> Expr
---apply p args
+apply :: Expr -> Expr -> Expr
+apply car cdr = undefined
