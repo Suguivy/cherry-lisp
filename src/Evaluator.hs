@@ -15,8 +15,7 @@ base = M.fromList [
 
 eval :: Env -> Expr -> (Env, Expr)
 eval env i@(IntE _)    = (env, i)
-eval env (VarE v)      = (M.insert v nExpr nEnv, nExpr)
-  where (nEnv, nExpr)  = eval env $ env M.! v
+eval env (VarE v)      = eval env $ env M.! v
 eval env (SetE v expr) = (M.insert v expr env, NilE)
 eval env (QuotedE e)    = (env, e)
 eval env (ConsE car cdr) = (env, apply car cdr)
