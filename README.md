@@ -40,8 +40,6 @@ cherry> (const 3 6)
 3
 cherry> (set! always-seven (const 7))
 nil
-cherry> always-seven
-#[lambda y x]
 cherry> (always-seven 1)
 7
 cherry> (always-seven 8)
