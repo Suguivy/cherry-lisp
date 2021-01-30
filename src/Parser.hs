@@ -20,7 +20,7 @@ expressionFromTokensEOF = do
 
 expressionFromTokens :: GenParser Token st Expr
 expressionFromTokens = do
-  expr <- intE <|> try defineE <|> try nilE <|> varE <|> procedureE
+  expr <- intE <|> try setE <|> try nilE <|> varE <|> procedureE
   return expr
 
 intE :: GenParser Token st Expr
@@ -31,14 +31,14 @@ intE = do
 procedureE :: GenParser Token st Expr
 procedureE = do
   _ <- parseLeftParenT
-  (VarT p) <- parseVarT
+  (SymbolT p) <- parseSymbolT
   args <- many expressionFromTokens
   _ <- parseRightParenT
   return $ ProcedureE p args
 
 varE :: GenParser Token st Expr
 varE = do
-  (VarT var) <- parseVarT
+  (SymbolT var) <- parseSymbolT
   return $ VarE var
 
 nilE :: GenParser Token st Expr
@@ -46,11 +46,11 @@ nilE = do
   _ <- parseNilT
   return NilE
 
-defineE :: GenParser Token st Expr
-defineE = do
+setE :: GenParser Token st Expr
+setE = do
   _ <- parseLeftParenT
   _ <- parseSetT
-  (VarT var) <- parseVarT
+  (SymbolT var) <- parseSymbolT
   expr <- expressionFromTokens
   _ <- parseRightParenT
   return $ SetE var expr
@@ -69,15 +69,19 @@ parseRightParenT :: GenParser Token st Token
 parseRightParenT = satisfyT (== RightParenT)
 
 parseSetT :: GenParser Token st Token
-parseSetT = satisfyT (== SetT)
+parseSetT = satisfyT isSetT
+  where isSetT (SymbolT "set!") = True
+        isSetT _               = False
 
 parseNilT :: GenParser Token st Token
-parseNilT = satisfyT (== NilT)
+parseNilT = satisfyT isNilT
+  where isNilT (SymbolT "nil") = True
+        isNilT _               = False
 
-parseVarT :: GenParser Token st Token
-parseVarT = satisfyT isVarT
-  where isVarT (VarT _) = True
-        isVarT _        = False
+parseSymbolT :: GenParser Token st Token
+parseSymbolT = satisfyT isSymbolT
+  where isSymbolT (SymbolT _) = True
+        isSymbolT _        = False
 
 parseIntT :: GenParser Token st Token
 parseIntT = satisfyT isIntT

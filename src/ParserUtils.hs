@@ -1,3 +1,4 @@
+-- UNUSED
 module ParserUtils where
 
 import Text.ParserCombinators.Parsec

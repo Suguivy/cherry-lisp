@@ -1,7 +1,6 @@
 module Lexer where
 
 import Text.ParserCombinators.Parsec
-import ParserUtils
 import Data.Char
 import TokenType
 
@@ -13,7 +12,7 @@ parseTokens = do
     return tokns
 
 anyLispToken :: GenParser Char st Token
-anyLispToken = leftParenT <|> rightParenT <|> try nilT <|> try setT <|> varT <|> intT
+anyLispToken = leftParenT <|> rightParenT <|> symbolT <|> intT
 
 ------------------------------------------------------------
 
@@ -28,13 +27,7 @@ leftParenT = char '(' >> return LeftParenT
 rightParenT :: GenParser Char st Token
 rightParenT = char ')' >> return RightParenT
 
-setT :: GenParser Char st Token
-setT = caseInsensitiveString "set!" >> return SetT
-
-nilT :: GenParser Char st Token
-nilT = caseInsensitiveString "nil" >> return NilT
-
-varT :: GenParser Char st Token
-varT = do
+symbolT :: GenParser Char st Token
+symbolT = do
     var <- map toLower <$> many1 (letter <|> oneOf "+-*/!|@#$~%&/=<>")
-    return $ VarT var
+    return $ SymbolT var
