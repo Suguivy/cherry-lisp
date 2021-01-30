@@ -4,6 +4,7 @@ data Expr = IntE Integer
           | VarE String
           | ProcedureE String [Expr]
           | SetE String Expr
+          | ConsE Expr Expr
           | NilE deriving (Show)
 
 -- instance Show Expr where

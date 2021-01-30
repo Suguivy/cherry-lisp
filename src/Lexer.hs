@@ -29,5 +29,5 @@ rightParenT = char ')' >> return RightParenT
 
 symbolT :: GenParser Char st Token
 symbolT = do
-    var <- map toLower <$> many1 (letter <|> oneOf "+-*/!|@#$~%&/=<>")
+    var <- map toLower <$> many1 (letter <|> oneOf "+-*/\\!|@#$~%&/=<>")
     return $ SymbolT var

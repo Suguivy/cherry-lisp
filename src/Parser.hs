@@ -20,7 +20,7 @@ expressionFromTokensEOF = do
 
 expressionFromTokens :: GenParser Token st Expr
 expressionFromTokens = do
-  expr <- intE <|> try setE <|> try nilE <|> varE <|> procedureE
+  expr <- intE <|> try setE <|> try nilE <|> try consE <|> varE <|> procedureE
   return expr
 
 intE :: GenParser Token st Expr
@@ -35,6 +35,15 @@ procedureE = do
   args <- many expressionFromTokens
   _ <- parseRightParenT
   return $ ProcedureE p args
+
+consE :: GenParser Token st Expr
+consE = do
+  _ <- parseLeftParenT
+  _ <- parseConsT
+  expr1 <- expressionFromTokens
+  expr2 <- expressionFromTokens
+  _ <- parseRightParenT
+  return $ ConsE expr1 expr2
 
 varE :: GenParser Token st Expr
 varE = do
@@ -77,6 +86,11 @@ parseNilT :: GenParser Token st Token
 parseNilT = satisfyT isNilT
   where isNilT (SymbolT "nil") = True
         isNilT _               = False
+
+parseConsT :: GenParser Token st Token
+parseConsT = satisfyT isConsT
+  where isConsT (SymbolT "cons") = True
+        isConsT _               = False
 
 parseSymbolT :: GenParser Token st Token
 parseSymbolT = satisfyT isSymbolT
