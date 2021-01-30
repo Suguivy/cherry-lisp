@@ -1,18 +1,18 @@
 module Lexer where
 
-import Text.ParserCombinators.Parsec
+import Text.ParserCombinators.Parsec hiding (anyToken)
 import Data.Char
-import TokenType
+import Token
 
-parseTokens :: GenParser Char st [Token]
-parseTokens = do
+tokens :: GenParser Char st [Token]
+tokens = do
     _ <-  spaces
-    tokns <- many $ do t <- anyLispToken; spaces; return t
+    tokns <- many $ do t <- anyToken; spaces; return t
     _ <- eof
     return tokns
 
-anyLispToken :: GenParser Char st Token
-anyLispToken = leftParenT <|> rightParenT <|> apostropheT <|> backslashT <|> symbolT <|> intT
+anyToken :: GenParser Char st Token
+anyToken = leftParenT <|> rightParenT <|> apostropheT <|> backslashT <|> symbolT <|> intT
 
 ------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-module TokenType where
+module Token where
 
 data Token = LeftParenT
            | RightParenT

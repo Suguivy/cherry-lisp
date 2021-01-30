@@ -1,32 +1,34 @@
 module Parser where
 
-import Text.Parsec
+import Text.Parsec hiding (tokens)
 import Text.Parsec.String
-import Lexer
-import TokenType
-import ExprType
+import Lexer (tokens)
+import Token
+import Expression
 
 parseExpression :: String -> Either ParseError Expr
 parseExpression s = do
-  tokns <- parse parseTokens "lexical error" s
-  expr <- parse expressionFromTokensEOF "parsing error" tokns
+  tokns <- parse tokens "lexical error" s
+  expr <- parse anyExpressionEOF "parsing error" tokns
   return expr
 
-expressionFromTokensEOF :: GenParser Token st Expr
-expressionFromTokensEOF = do
-  expr <- expressionFromTokens
+anyExpressionEOF :: GenParser Token st Expr
+anyExpressionEOF = do
+  expr <- anyExpression
   _ <- eof
   return expr
 
-expressionFromTokens :: GenParser Token st Expr
-expressionFromTokens = do
+anyExpression :: GenParser Token st Expr
+anyExpression = do
   expr <- intE <|> quotedE <|> try setE <|> try nilE <|> try consE <|> try lambdaE <|> varE <|> listE
   return expr
+
+------------------------------------------------------------
 
 listE :: GenParser Token st Expr
 listE = do
   _ <- parseLeftParenT
-  exprs <- many expressionFromTokens
+  exprs <- many anyExpression
   _ <- parseRightParenT
   return $ toCons exprs
   where toCons []     = NilE
@@ -40,15 +42,15 @@ intE = do
 quotedE :: GenParser Token st Expr
 quotedE = do
   _ <- parseApostropheT
-  expr <- expressionFromTokens
+  expr <- anyExpression
   return $ QuotedE expr
 
 consE :: GenParser Token st Expr
 consE = do
   _ <- parseLeftParenT
   _ <- parseConsT
-  expr1 <- expressionFromTokens
-  expr2 <- expressionFromTokens
+  expr1 <- anyExpression
+  expr2 <- anyExpression
   _ <- parseRightParenT
   return $ ConsE expr1 expr2
 
@@ -67,7 +69,7 @@ setE = do
   _ <- parseLeftParenT
   _ <- parseSetT
   (SymbolT var) <- parseSymbolT
-  expr <- expressionFromTokens
+  expr <- anyExpression
   _ <- parseRightParenT
   return $ SetE var expr
 
@@ -75,9 +77,8 @@ lambdaE :: GenParser Token st Expr
 lambdaE = do
   _ <- parseBackslashT
   (SymbolT arg) <- parseSymbolT
-  body <- expressionFromTokens
+  body <- anyExpression
   return $ LambdaE arg body
-
 
 ------------------------------------------------------------
 
