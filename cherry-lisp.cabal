@@ -22,7 +22,8 @@ executable cherry
                        Parser,
                        TokenType,
                        Lexer,
-                       Evaluator
+                       Evaluator,
+                       Enviroment
 
   build-depends:       base >= 4.7 && < 5,
                        containers,

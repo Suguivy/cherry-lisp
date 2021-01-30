@@ -5,7 +5,8 @@ data Expr = IntE Integer
           | SetE String Expr
           | ConsE Expr Expr
           | QuotedE Expr
-          | NilE deriving (Show)
+          | NilE
+          deriving (Show)
 
 -- instance Show Expr where
 --   show (IntE x) = show x

@@ -1,6 +1,7 @@
 module Main where
 
 import Evaluator
+import Enviroment
 import Parser
 import Control.Monad
 import Data.Maybe
