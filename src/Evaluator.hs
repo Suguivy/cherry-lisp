@@ -3,23 +3,30 @@ module Evaluator where
 import Expression
 import Enviroment
 import Data.Maybe
+import Control.Monad.State
 
 -- TODO: create a separated file for builtinProcs
 -- TODO: create a BuiltinProc or something like that in data Expr, and make + a builtin proc
 
-eval :: Enviroment -> Expr -> (Enviroment, Expr)
-eval env i@(IntE _)     = (env, i)
-eval env (VarE v)       = eval env $ fromJust $ lookupVar env v
-eval env (SetE v expr)  = (insertVar env v expr, NilE)
-eval env (QuotedE e)    = (env, e)
-eval env (ConsE p args) = (fEnv, fExpr)
-  where (uEnv, ap)    = eval env p
-        (aEnv, aExpr) = apply ap args
-        (fEnv, fExpr) = eval (extendEnv aEnv uEnv) aExpr
-eval env (LambdaE arg expr) = (env, LambdaE arg expr)
-eval env NilE          = (env, NilE)
+evalS :: Expr -> State Enviroment Expr
+evalS i@(IntE _) = return i
+evalS (VarE v) = do
+  get >>= evalS . fromJust . lookupVar v
+evalS (SetE v expr) = do
+  get >>= put . insertVar v expr
+  return NilE
+evalS (QuotedE e) = return e
+evalS (ConsE pr args) = do
+  evaluatedProc <- evalS pr
+  resExpr <- applyS evaluatedProc args
+  finalExpr <- evalS resExpr
+  return finalExpr
+evalS l@(LambdaE _ _) = return l
+evalS NilE = return NilE
 
-apply :: Expr -> Expr -> (Enviroment, Expr)
-apply (LambdaE p expr) (ConsE x xs) = (extendEnv (insertVar emptyEnv p x) nEnv, nExp)
-  where (nEnv, nExp) = apply expr xs
-apply e NilE = (emptyEnv, e)
+applyS :: Expr -> Expr -> State Enviroment Expr
+applyS (LambdaE p expr) (ConsE x xs) = do
+  e <- applyS expr xs
+  get >>= put . (`extendEnv` insertVar p x emptyEnv)
+  return e
+applyS e NilE = return e

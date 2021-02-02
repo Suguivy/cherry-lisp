@@ -6,6 +6,7 @@ import Parser
 import Control.Monad
 import Data.Maybe
 import System.Console.Haskeline
+import Control.Monad.State
 
 main :: IO ()
 main = do
@@ -19,10 +20,10 @@ repl = do
           line <- getInputLine "cherry> "
           unless (isNothing line) $ do
             let expr = parseExpression $ fromJust line
-            let (nEnv, out) = case expr of
-                  (Left err)    -> (env, show err)
-                  (Right expr') -> let (env', nExp) = eval env expr'
-                                   in (env', show nExp)
+            let (out, nEnv) = case expr of
+                  (Left err)    -> (show err, env)
+                  (Right expr') -> let (nExp, env') = runState (evalS expr') env
+                                   in (show nExp, env')
             outputStrLn out
             repl' nEnv
 
