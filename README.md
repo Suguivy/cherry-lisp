@@ -1,6 +1,6 @@
 # Cherry Lisp
 
-```
+```text
   /\
  |  \  A tiny, curried and lazy Lisp.
  @   @
@@ -40,8 +40,6 @@ cherry> (const 3 6)
 3
 cherry> (set! always-seven (const 7))
 nil
-cherry> always-seven
-#[lambda y x]
 cherry> (always-seven 1)
 7
 cherry> (always-seven 8)
@@ -52,20 +50,20 @@ cherry> (always-seven 8)
 
 Install the *stack* build tool. On *Debian* based systems, run (as root):
 
-```
+```text
 # apt install haskell-stack
 ```
 
 Clone the repo:
 
-```
+```text
 $ git clone https://git.fai.su/Suguivy/cherry-lisp
 
 ```
 
 Compile it:
 
-```
+```text
 $ cd cherry-lisp
 $ stack upgrade
 $ stack build
@@ -73,7 +71,7 @@ $ stack build
 
 Install and execute it:
 
-```
+```text
 $ stack install
 $ cherry
 ```
