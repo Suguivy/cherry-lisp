@@ -22,11 +22,16 @@ evalS (ConsE pr args) = do
   finalExpr <- evalS resExpr
   return finalExpr
 evalS l@(LambdaE _ _) = return l
+evalS p@(BuiltinProcE _) = return p
 evalS NilE = return NilE
 
 applyS :: Expr -> Expr -> State Enviroment Expr
 applyS (LambdaE p expr) (ConsE x xs) = do
   e <- applyS expr xs
   get >>= put . (`extendEnv` insertVar p x emptyEnv)
+  return e
+applyS (BuiltinProcE p) args = do
+  args' <- mapM evalS $ cons2List args
+  e <- p args'
   return e
 applyS e NilE = return e

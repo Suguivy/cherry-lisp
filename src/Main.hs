@@ -1,8 +1,8 @@
 module Main where
 
 import Evaluator
-import Enviroment
 import Parser
+import Enviroment.Base
 import Control.Monad
 import Data.Maybe
 import System.Console.Haskeline

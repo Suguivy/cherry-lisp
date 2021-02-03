@@ -20,7 +20,7 @@ anyExpressionEOF = do
 
 anyExpression :: GenParser Token st Expr
 anyExpression = do
-  expr <- intE <|> quotedE <|> try setE <|> try nilE <|> try consE <|> try lambdaE <|> varE <|> listE
+  expr <- intE <|> quotedE <|> try setE <|> try nilE <|> try lambdaE <|> varE <|> listE
   return expr
 
 ------------------------------------------------------------
@@ -44,15 +44,6 @@ quotedE = do
   _ <- parseApostropheT
   expr <- anyExpression
   return $ QuotedE expr
-
-consE :: GenParser Token st Expr
-consE = do
-  _ <- parseLeftParenT
-  _ <- parseConsT
-  expr1 <- anyExpression
-  expr2 <- anyExpression
-  _ <- parseRightParenT
-  return $ ConsE expr1 expr2
 
 varE :: GenParser Token st Expr
 varE = do
@@ -108,11 +99,6 @@ parseNilT :: GenParser Token st Token
 parseNilT = satisfyT isNilT
   where isNilT (SymbolT "nil") = True
         isNilT _               = False
-
-parseConsT :: GenParser Token st Token
-parseConsT = satisfyT isConsT
-  where isConsT (SymbolT "cons") = True
-        isConsT _               = False
 
 parseSymbolT :: GenParser Token st Token
 parseSymbolT = satisfyT isSymbolT
