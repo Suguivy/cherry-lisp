@@ -23,6 +23,8 @@ executable cherry
                        Lexer,
                        Evaluator,
                        Enviroment,
+                       Enviroment.Base,
+                       BuiltinProcs,
                        Types.Language
 
   build-depends:       base >= 4.7 && < 5,
