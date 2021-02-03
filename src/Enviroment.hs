@@ -1,10 +1,8 @@
 module Enviroment where
 
 import qualified Data.Map as M
-import Expression
+import Types.Language
 import Data.Maybe
-
-data Enviroment = Enviroment (M.Map String Expr) (Maybe Enviroment)
 
 -- The base enviroment, that contains the main functions and variables
 base :: Enviroment

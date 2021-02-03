@@ -1,4 +1,8 @@
-module Expression where
+module Types.Language where
+
+import Data.Map (Map)
+
+data Enviroment = Enviroment (Map String Expr) (Maybe Enviroment)
 
 data Expr = IntE Integer
           | VarE String
@@ -7,8 +11,6 @@ data Expr = IntE Integer
           | LambdaE String Expr
           | QuotedE Expr
           | NilE
-
--- TODO: Make set! and lambda(?) parsed as cons, detect later set! and lambda as special procedures
 
 instance Show Expr where
   show (IntE x) = show x
@@ -20,3 +22,5 @@ instance Show Expr where
   show (LambdaE s e) = "#[lambda " ++ s ++ " " ++ show e ++ "]"
   show (QuotedE e) = show e
   show NilE     = "nil"
+
+-- TODO: Make set! and lambda(?) parsed as cons, detect later set! and lambda as special procedures

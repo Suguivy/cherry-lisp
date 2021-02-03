@@ -1,6 +1,6 @@
 module Evaluator where
 
-import Expression
+import Types.Language
 import Enviroment
 import Data.Maybe
 import Control.Monad.State

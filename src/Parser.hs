@@ -4,7 +4,7 @@ import Text.Parsec hiding (tokens)
 import Text.Parsec.String
 import Lexer (tokens)
 import Token
-import Expression
+import Types.Language
 
 parseExpression :: String -> Either ParseError Expr
 parseExpression s = do
