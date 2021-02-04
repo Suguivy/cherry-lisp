@@ -22,7 +22,7 @@ instance Show Expr where
     where showCons (ConsE x NilE) = show x ++ ")"
           showCons (ConsE x xs)   = show x ++ " " ++ show xs ++ ")"
   show (LambdaE s e) = "#[lambda " ++ s ++ " " ++ show e ++ "]"
-  show (QuotedE e) = "Q" ++ show e
+  show (QuotedE e) = show e
   show NilE     = "nil"
 
 cons2List :: Expr -> [Expr]
